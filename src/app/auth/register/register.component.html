@@ -1,1 +1,63 @@
-<p>register works!</p>
+<div class="register-page">
+  <h2>Register</h2>
+
+  <h5>Already have an account? <a routerLink="/login">Sign In</a></h5>
+  <form [formGroup]="registerForm">
+    <div class="justify-content-center">
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Email Addres</mat-label>
+          <input matInput
+                  formControlName="email">
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>User Name</mat-label>
+          <input matInput
+                  formControlName="username">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput
+                  formControlName="firstname">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput
+                  formControlName="lastname">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput
+                  formControlName="password">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput
+                  formControlName="confirmPassword">
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div id="controls" class="row">
+      <button style="width: 20%" [disabled]="registerForm.invalid" (click)="submit()" mat-flat-button color="primary">
+        Register
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+

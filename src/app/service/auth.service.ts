@@ -20,6 +20,7 @@ export class AuthService {
   }
 
   public register(user: any): Observable<any> {
+    console.log(user);
     return this.http.post(AUTH_API + 'signup', {
       email: user.email,
       username: user.username,

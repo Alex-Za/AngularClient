@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private fb: FormBuilder) {
     if (this.tokenStorage.getUser()) {
-      this.router.navigate(['main']);
+      // this.router.navigate(['main']);
     }
 
   }
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
 
   private createLoginForm(): FormGroup {
     return this.fb.group({
-      username: ['', Validators.compose([Validators.required])],
+      username: ['', Validators.compose([Validators.required, Validators.email])],
       password: ['', Validators.compose([Validators.required])],
     });
   }
@@ -41,8 +41,6 @@ export class LoginComponent implements OnInit {
       username: this.loginForm.value.username,
       password: this.loginForm.value.password
     }).subscribe(data => {
-      console.log(data);
-
       this.tokenStorage.saveToken(data.token);
       this.tokenStorage.saveUser(data);
 
@@ -50,7 +48,6 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/']);
       window.location.reload();
     }, error => {
-      console.log(error);
       this.notificationService.showSnackBar(error.message);
     });
   }
