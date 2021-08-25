@@ -73,7 +73,8 @@ export class IndexComponent implements OnInit {
     }
   }
 
-  public postComment(message: string, postId: number, postIndex: number): void {
+  public postComment(event: Event, postId: number, postIndex: number): void {
+    const message: string = (event.target as HTMLInputElement).value;
     const post: Post = this.posts[postIndex];
 
     this.commentService.addCommentToPost(postId, message).subscribe(data => {

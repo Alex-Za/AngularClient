@@ -4,8 +4,6 @@
     "codelyzer"
   ],
   "rules": {
-    "no-unused-vars": ["warn", { "varsIgnorePattern": "^_" }],
-    "@typescript-eslint/no-unused-vars": ["warn", { "varsIgnorePattern": "^_" }],
     "align": {
       "options": [
         "parameters",

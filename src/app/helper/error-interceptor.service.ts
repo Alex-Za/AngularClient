@@ -16,8 +16,9 @@ export class ErrorInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(catchError(err => {
       if (err.status === 401) {
-        this.tokenService.logOut();
-        window.location.reload();
+        console.log('error = ' + err);
+        // this.tokenService.logOut();
+        // window.location.reload();
       }
 
       const error = err.error.message || err.statusText;
