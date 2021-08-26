@@ -28,6 +28,7 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     this.postService.getAllPosts().subscribe(data => {
       this.posts = data;
+      console.log(data);
       this.getCommentToPosts(this.posts);
       this.getImagesToPosts(this.posts);
       this.isPostsLoaded = true;
@@ -58,16 +59,16 @@ export class IndexComponent implements OnInit {
   public likePost(postId: number, postIndex: number): void {
     const post = this.posts[postIndex];
 
-    if (!post.userLiked.includes(this.user.username)) {
+    if (!post.usersLiked.includes(this.user.username)) {
       this.postService.likePost(postId, this.user.username).subscribe(() => {
-        post.userLiked.push(this.user.username);
+        post.usersLiked.push(this.user.username);
         this.notificationService.showSnackBar('Liked!');
       });
     } else {
       this.postService.likePost(postId, this.user.username).subscribe(() => {
-        const index: number = post.userLiked.indexOf(this.user.username, 0);
+        const index: number = post.usersLiked.indexOf(this.user.username, 0);
         if (index > -1) {
-          post.userLiked?.splice(index, 1);
+          post.usersLiked?.splice(index, 1);
         }
       });
     }

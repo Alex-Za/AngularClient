@@ -19,9 +19,10 @@ export class LoginComponent implements OnInit {
               private notificationService: NotificationService,
               private router: Router,
               private fb: FormBuilder) {
-    // if (this.tokenStorage.getUser()) {
-    //   this.router.navigate(['main']);
-    // }
+    if (this.tokenStorage.getUser()) {
+      console.log('user exists')
+      this.router.navigate(['main']);
+    }
 
   }
 

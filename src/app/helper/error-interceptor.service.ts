@@ -17,8 +17,8 @@ export class ErrorInterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(catchError(err => {
       if (err.status === 401) {
         console.log('error = ' + err);
-        // this.tokenService.logOut();
-        // window.location.reload();
+        this.tokenService.logOut();
+        window.location.reload();
       }
 
       const error = err.error.message || err.statusText;
