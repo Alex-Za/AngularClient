@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from 'src/app/service/auth.service';
 import { NotificationService } from 'src/app/service/notification.service';
 
@@ -8,7 +10,8 @@ import { NotificationService } from 'src/app/service/notification.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
+  private $unsubscribe = new ReplaySubject(1);
 
   public registerForm: FormGroup;
 
@@ -39,11 +42,16 @@ export class RegisterComponent implements OnInit {
       firstname: this.registerForm.value.firstname,
       lastname: this.registerForm.value.lastname,
       confirmPassword: this.registerForm.value.confirmPassword
-    }).subscribe(data => {
+    }).pipe(takeUntil(this.$unsubscribe)).subscribe(data => {
       this.notificationService.showSnackBar('Succesfully registered');
     }, error => {
       this.notificationService.showSnackBar('Something goes wrong');
     });
+  }
+
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 
 }

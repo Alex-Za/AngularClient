@@ -1,16 +1,19 @@
+import { takeUntil } from 'rxjs/operators';
 import { User } from './../../models/user';
 import { UserService } from './../../service/user.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationService } from 'src/app/service/notification.service';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss']
 })
-export class EditUserComponent implements OnInit {
+export class EditUserComponent implements OnInit, OnDestroy {
+  private $unsubscribe = new ReplaySubject(1);
 
   public profileEditForm: FormGroup;
 
@@ -42,7 +45,7 @@ export class EditUserComponent implements OnInit {
   }
 
   public submit(): void {
-    this.userService.updateUser(this.updateUser()).subscribe(() => {
+    this.userService.updateUser(this.updateUser()).pipe(takeUntil(this.$unsubscribe)).subscribe(() => {
       this.notificationService.showSnackBar('User updated successfully');
       this.dialogRef.close();
     });
@@ -57,6 +60,11 @@ export class EditUserComponent implements OnInit {
 
   public closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 
 }

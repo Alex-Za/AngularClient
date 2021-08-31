@@ -1,19 +1,22 @@
+import { takeUntil } from 'rxjs/operators';
 import { EditUserComponent } from './../edit-user/edit-user.component';
 import { ImageUploadService } from './../../service/image-upload.service';
 import { UserService } from './../../service/user.service';
 import { PostService } from './../../service/post.service';
 import { TokenStorageService } from './../../service/token-storage.service';
 import { User } from './../../models/user';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NotificationService } from 'src/app/service/notification.service';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
+  private $unsubscribe = new ReplaySubject(1);
 
   public isUserDataLoaded: boolean = false;
   public user: User;
@@ -29,12 +32,12 @@ export class ProfileComponent implements OnInit {
     private userService: UserService) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe(data => {
+    this.userService.getCurrentUser().pipe(takeUntil(this.$unsubscribe)).subscribe(data => {
       this.user = data;
       this.isUserDataLoaded = true;
     });
 
-    this.imageService.getProfileImage().subscribe(data => {
+    this.imageService.getProfileImage().pipe(takeUntil(this.$unsubscribe)).subscribe(data => {
       if (data !== null) {
         this.userProfileImage = data.imageBytes;
       }
@@ -62,7 +65,7 @@ export class ProfileComponent implements OnInit {
 
   public onUpload(): void {
     if (this.selectedFile != null) {
-      this.imageService.uploadImageToUser(this.selectedFile).subscribe(() => {
+      this.imageService.uploadImageToUser(this.selectedFile).pipe(takeUntil(this.$unsubscribe)).subscribe(() => {
         this.notificationService.showSnackBar('Profile Image uploaded successfully');
       });
     }
@@ -73,6 +76,11 @@ export class ProfileComponent implements OnInit {
       return null;
     }
     return 'data:image/jpeg;base64,' + img;
+  }
+
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 
 }

@@ -2,15 +2,18 @@ import { Router } from '@angular/router';
 import { NotificationService } from './../../service/notification.service';
 import { TokenStorageService } from './../../service/token-storage.service';
 import { AuthService } from './../../service/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  private $unsubscribe = new ReplaySubject(1);
 
   public loginForm: FormGroup;
 
@@ -41,7 +44,7 @@ export class LoginComponent implements OnInit {
     this.authService.login({
       username: this.loginForm.value.username,
       password: this.loginForm.value.password
-    }).subscribe(data => {
+    }).pipe(takeUntil(this.$unsubscribe)).subscribe(data => {
       this.tokenStorage.saveToken(data.token);
       this.tokenStorage.saveUser(data);
 
@@ -51,6 +54,11 @@ export class LoginComponent implements OnInit {
     }, error => {
       this.notificationService.showSnackBar(error.message);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 
 }
